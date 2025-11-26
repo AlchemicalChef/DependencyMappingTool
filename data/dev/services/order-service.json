@@ -1,0 +1,16 @@
+{
+  "id": "order-service",
+  "name": "Order Service",
+  "serviceType": "backend",
+  "status": "degraded",
+  "description": "Handles order creation, processing, and lifecycle management.",
+  "version": "4.2.1",
+  "owner": "orders-team",
+  "team": "Commerce",
+  "tags": ["orders", "commerce", "critical"],
+  "metadata": {
+    "repository": "https://github.com/org/order-service",
+    "port": 8086,
+    "replicas": 3
+  }
+}

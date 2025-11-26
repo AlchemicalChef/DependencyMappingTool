@@ -1,0 +1,16 @@
+{
+  "id": "rabbitmq",
+  "name": "RabbitMQ",
+  "serviceType": "queue",
+  "status": "healthy",
+  "description": "Message broker for async communication between services.",
+  "version": "3.12.0",
+  "owner": "platform-team",
+  "team": "Platform Engineering",
+  "tags": ["messaging", "queue", "async"],
+  "metadata": {
+    "engine": "RabbitMQ",
+    "cluster": true,
+    "nodes": 3
+  }
+}

@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Prevent text selection during drag operations */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--chakra-colors-gray-400);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--chakra-colors-gray-500);
+}
+
+/* Dark mode scrollbar */
+.chakra-ui-dark ::-webkit-scrollbar-thumb {
+  background: var(--chakra-colors-gray-600);
+}
+
+.chakra-ui-dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--chakra-colors-gray-500);
+}

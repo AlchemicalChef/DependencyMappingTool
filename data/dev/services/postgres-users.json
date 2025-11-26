@@ -1,0 +1,16 @@
+{
+  "id": "postgres-users",
+  "name": "Users Database",
+  "serviceType": "database",
+  "status": "healthy",
+  "description": "PostgreSQL database storing user accounts, profiles, and credentials.",
+  "version": "15.2",
+  "owner": "dba-team",
+  "team": "Database Administration",
+  "tags": ["database", "postgres", "critical"],
+  "metadata": {
+    "engine": "PostgreSQL",
+    "storage": "500GB",
+    "backup": "daily"
+  }
+}

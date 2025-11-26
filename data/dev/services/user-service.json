@@ -1,0 +1,16 @@
+{
+  "id": "user-service",
+  "name": "User Service",
+  "serviceType": "backend",
+  "status": "healthy",
+  "description": "Manages user profiles, preferences, and account settings.",
+  "version": "1.8.2",
+  "owner": "user-team",
+  "team": "User Experience",
+  "tags": ["users", "profiles"],
+  "metadata": {
+    "repository": "https://github.com/org/user-service",
+    "port": 8082,
+    "replicas": 2
+  }
+}

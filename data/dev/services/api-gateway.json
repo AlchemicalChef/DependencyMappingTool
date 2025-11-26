@@ -1,0 +1,17 @@
+{
+  "id": "api-gateway",
+  "name": "API Gateway",
+  "serviceType": "gateway",
+  "status": "healthy",
+  "description": "Main entry point for all API requests. Handles routing, rate limiting, and authentication.",
+  "version": "2.4.1",
+  "owner": "platform-team",
+  "team": "Platform Engineering",
+  "tags": ["critical", "public-facing", "rate-limited"],
+  "metadata": {
+    "repository": "https://github.com/org/api-gateway",
+    "documentation": "https://docs.internal/api-gateway",
+    "port": 8080,
+    "replicas": 3
+  }
+}

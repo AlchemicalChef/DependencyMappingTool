@@ -1,0 +1,15 @@
+{
+  "id": "payment-gateway",
+  "name": "Payment Gateway",
+  "serviceType": "external",
+  "status": "healthy",
+  "description": "External payment processing service (Stripe integration).",
+  "version": "N/A",
+  "owner": "finance-team",
+  "team": "Finance",
+  "tags": ["payments", "external", "stripe", "critical"],
+  "metadata": {
+    "provider": "Stripe",
+    "sandbox": true
+  }
+}

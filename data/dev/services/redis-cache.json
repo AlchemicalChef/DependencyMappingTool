@@ -1,0 +1,16 @@
+{
+  "id": "redis-cache",
+  "name": "Redis Cache",
+  "serviceType": "cache",
+  "status": "healthy",
+  "description": "In-memory cache for session data, rate limiting counters, and frequently accessed data.",
+  "version": "7.0.8",
+  "owner": "platform-team",
+  "team": "Platform Engineering",
+  "tags": ["cache", "redis", "sessions"],
+  "metadata": {
+    "engine": "Redis",
+    "memory": "16GB",
+    "cluster": true
+  }
+}

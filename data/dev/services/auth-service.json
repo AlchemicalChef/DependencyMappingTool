@@ -1,0 +1,16 @@
+{
+  "id": "auth-service",
+  "name": "Authentication Service",
+  "serviceType": "backend",
+  "status": "healthy",
+  "description": "Handles user authentication, JWT token generation and validation, OAuth2 flows.",
+  "version": "3.1.0",
+  "owner": "security-team",
+  "team": "Security",
+  "tags": ["critical", "security", "oauth"],
+  "metadata": {
+    "repository": "https://github.com/org/auth-service",
+    "port": 8081,
+    "replicas": 2
+  }
+}

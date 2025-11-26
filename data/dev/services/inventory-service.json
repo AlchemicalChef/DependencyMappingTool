@@ -1,0 +1,16 @@
+{
+  "id": "inventory-service",
+  "name": "Inventory Service",
+  "serviceType": "backend",
+  "status": "healthy",
+  "description": "Manages product inventory, stock levels, and reservations.",
+  "version": "2.3.0",
+  "owner": "inventory-team",
+  "team": "Commerce",
+  "tags": ["inventory", "stock", "commerce"],
+  "metadata": {
+    "repository": "https://github.com/org/inventory-service",
+    "port": 8087,
+    "replicas": 2
+  }
+}

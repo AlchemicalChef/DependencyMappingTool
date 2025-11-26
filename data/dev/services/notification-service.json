@@ -1,0 +1,16 @@
+{
+  "id": "notification-service",
+  "name": "Notification Service",
+  "serviceType": "backend",
+  "status": "healthy",
+  "description": "Handles email, SMS, and push notifications to users.",
+  "version": "2.0.5",
+  "owner": "notifications-team",
+  "team": "Communications",
+  "tags": ["notifications", "email", "sms"],
+  "metadata": {
+    "repository": "https://github.com/org/notification-service",
+    "port": 8085,
+    "replicas": 2
+  }
+}

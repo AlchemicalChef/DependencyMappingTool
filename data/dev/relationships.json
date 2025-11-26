@@ -1,0 +1,123 @@
+{
+  "relationships": [
+    {
+      "id": "rel-001",
+      "source": "api-gateway",
+      "target": "auth-service",
+      "relationshipType": "authenticates_via",
+      "description": "Validates JWT tokens for all incoming requests"
+    },
+    {
+      "id": "rel-002",
+      "source": "api-gateway",
+      "target": "user-service",
+      "relationshipType": "depends_on",
+      "description": "Routes user-related API requests"
+    },
+    {
+      "id": "rel-003",
+      "source": "api-gateway",
+      "target": "order-service",
+      "relationshipType": "depends_on",
+      "description": "Routes order-related API requests"
+    },
+    {
+      "id": "rel-004",
+      "source": "api-gateway",
+      "target": "redis-cache",
+      "relationshipType": "reads_from",
+      "description": "Reads rate limiting counters and cached responses"
+    },
+    {
+      "id": "rel-005",
+      "source": "auth-service",
+      "target": "postgres-users",
+      "relationshipType": "reads_from",
+      "description": "Queries user credentials for authentication"
+    },
+    {
+      "id": "rel-006",
+      "source": "auth-service",
+      "target": "redis-cache",
+      "relationshipType": "reads_from",
+      "description": "Stores and retrieves session tokens"
+    },
+    {
+      "id": "rel-007",
+      "source": "user-service",
+      "target": "postgres-users",
+      "relationshipType": "reads_from",
+      "description": "Queries and updates user profile data"
+    },
+    {
+      "id": "rel-008",
+      "source": "user-service",
+      "target": "postgres-users",
+      "relationshipType": "writes_to",
+      "description": "Saves user profile updates"
+    },
+    {
+      "id": "rel-009",
+      "source": "user-service",
+      "target": "notification-service",
+      "relationshipType": "communicates_with",
+      "description": "Triggers notifications for profile changes"
+    },
+    {
+      "id": "rel-010",
+      "source": "notification-service",
+      "target": "rabbitmq",
+      "relationshipType": "publishes",
+      "description": "Publishes notification events to message queue"
+    },
+    {
+      "id": "rel-011",
+      "source": "notification-service",
+      "target": "rabbitmq",
+      "relationshipType": "subscribes",
+      "description": "Subscribes to notification request events"
+    },
+    {
+      "id": "rel-012",
+      "source": "order-service",
+      "target": "postgres-users",
+      "relationshipType": "reads_from",
+      "description": "Fetches user information for orders"
+    },
+    {
+      "id": "rel-013",
+      "source": "order-service",
+      "target": "inventory-service",
+      "relationshipType": "depends_on",
+      "description": "Checks and reserves inventory for orders"
+    },
+    {
+      "id": "rel-014",
+      "source": "order-service",
+      "target": "payment-gateway",
+      "relationshipType": "communicates_with",
+      "description": "Processes payments for orders"
+    },
+    {
+      "id": "rel-015",
+      "source": "order-service",
+      "target": "rabbitmq",
+      "relationshipType": "publishes",
+      "description": "Publishes order events for other services"
+    },
+    {
+      "id": "rel-016",
+      "source": "order-service",
+      "target": "notification-service",
+      "relationshipType": "communicates_with",
+      "description": "Triggers order confirmation notifications"
+    },
+    {
+      "id": "rel-017",
+      "source": "inventory-service",
+      "target": "rabbitmq",
+      "relationshipType": "subscribes",
+      "description": "Subscribes to order events for inventory updates"
+    }
+  ]
+}

@@ -50,6 +50,7 @@ const ALL_SERVICE_TYPES: ServiceType[] = [
   "frontend",
   "backend",
   "external",
+  "identity-provider",
 ];
 
 const ALL_STATUSES: ServiceStatus[] = [

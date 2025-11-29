@@ -31,6 +31,7 @@ export type ServiceType =
   | "frontend"
   | "backend"
   | "external"
+  | "identity-provider"
   | string;
 
 /**

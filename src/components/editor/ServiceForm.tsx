@@ -43,6 +43,7 @@ const SERVICE_TYPES: ServiceType[] = [
   "frontend",
   "backend",
   "external",
+  "identity-provider",
 ];
 
 /**
@@ -210,7 +211,7 @@ export function ServiceForm({
           >
             {SERVICE_TYPES.map((type) => (
               <option key={type} value={type}>
-                {type.charAt(0).toUpperCase() + type.slice(1)}
+                {type.split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
               </option>
             ))}
           </Select>

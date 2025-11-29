@@ -34,6 +34,7 @@ pub fn run() {
             commands::environments::get_current_environment,
             commands::environments::switch_environment,
             commands::environments::set_data_path,
+            commands::environments::create_environment,
             commands::relationships::get_all_relationships,
             commands::relationships::get_relationships_for_service,
             commands::relationships::save_relationship,

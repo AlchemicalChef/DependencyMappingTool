@@ -230,6 +230,25 @@ export async function switchEnvironment(environment: string): Promise<void> {
 }
 
 /**
+ * Creates a new environment with the required directory structure.
+ *
+ * Creates a new environment directory with an empty services folder and
+ * an empty relationships.json file.
+ *
+ * @param environment - The name of the new environment to create
+ * @returns Promise resolving when the environment is created
+ * @throws Error if the environment already exists or creation fails
+ *
+ * @example
+ * ```typescript
+ * await createEnvironment('staging');
+ * ```
+ */
+export async function createEnvironment(environment: string): Promise<void> {
+  return invoke<void>("create_environment", { environment });
+}
+
+/**
  * Sets the root data directory path for all environment data.
  *
  * Use this to point the application at a different data location.

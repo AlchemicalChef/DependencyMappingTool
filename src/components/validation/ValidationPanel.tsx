@@ -25,7 +25,7 @@ import {
   AlertIcon,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { RepeatIcon, WarningIcon, InfoIcon } from "@chakra-ui/icons";
+import { RepeatIcon, WarningIcon, InfoIcon, CloseIcon } from "@chakra-ui/icons";
 import { useCallback, useEffect } from "react";
 import { useEditorStore, ValidationIssue } from "@/store/editorStore";
 import { useServicesStore } from "@/store/servicesStore";
@@ -142,7 +142,7 @@ function ValidationIssueItem({ issue, onHighlight }: ValidationIssueItemProps) {
  * ```
  */
 export function ValidationPanel() {
-  const { validation, setValidationIssues, setValidating } = useEditorStore();
+  const { validation, setValidationIssues, setValidating, setValidationPanelOpen } = useEditorStore();
   const { currentEnvironment } = useServicesStore();
   const { setSelectedNode } = useGraphStore();
 
@@ -220,14 +220,24 @@ export function ValidationPanel() {
               {currentEnvironment} environment
             </Text>
           </VStack>
-          <Button
-            size="sm"
-            leftIcon={<RepeatIcon />}
-            onClick={runValidation}
-            isLoading={validation.isValidating}
-          >
-            Refresh
-          </Button>
+          <HStack spacing={2}>
+            <Button
+              size="sm"
+              leftIcon={<RepeatIcon />}
+              onClick={runValidation}
+              isLoading={validation.isValidating}
+            >
+              Refresh
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setValidationPanelOpen(false)}
+              aria-label="Close validation panel"
+            >
+              <CloseIcon boxSize={3} />
+            </Button>
+          </HStack>
         </HStack>
 
         {/* Summary */}

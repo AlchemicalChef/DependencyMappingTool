@@ -7,6 +7,7 @@ export const SERVICE_TYPE_COLORS: Record<string, string> = {
   queue: "#D69E2E",
   frontend: "#00B5D8",
   external: "#718096",
+  "identity-provider": "#D53F8C",
 };
 
 export const STATUS_COLORS: Record<string, string> = {

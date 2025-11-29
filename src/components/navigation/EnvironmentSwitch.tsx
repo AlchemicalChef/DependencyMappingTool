@@ -12,14 +12,30 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  MenuDivider,
   Button,
   Badge,
   HStack,
   Text,
   useColorModeValue,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  Input,
+  useToast,
 } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, AddIcon } from "@chakra-ui/icons";
+import { useState, useCallback } from "react";
 import { useServicesStore, useGraphStore, useNavigationStore } from "@/store";
+import { createEnvironment, listEnvironments } from "@/services/tauri";
 
 /**
  * Dropdown for switching between deployment environments.
@@ -46,10 +62,15 @@ import { useServicesStore, useGraphStore, useNavigationStore } from "@/store";
  * ```
  */
 export function EnvironmentSwitch() {
-  const { currentEnvironment, availableEnvironments, setCurrentEnvironment } =
+  const { currentEnvironment, availableEnvironments, setCurrentEnvironment, setAvailableEnvironments } =
     useServicesStore();
   const { reset: resetGraph } = useGraphStore();
   const { reset: resetNavigation } = useNavigationStore();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [newEnvName, setNewEnvName] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+  const [error, setError] = useState("");
+  const toast = useToast();
 
   const bgColor = useColorModeValue("white", "gray.700");
 
@@ -110,6 +131,75 @@ export function EnvironmentSwitch() {
     return names[env.toLowerCase()] || env;
   };
 
+  /**
+   * Handles closing the create environment modal.
+   * Resets form state.
+   */
+  const handleCloseModal = useCallback(() => {
+    setNewEnvName("");
+    setError("");
+    onClose();
+  }, [onClose]);
+
+  /**
+   * Validates the environment name.
+   *
+   * @param name - The environment name to validate
+   * @returns Error message if invalid, empty string if valid
+   */
+  const validateEnvName = (name: string): string => {
+    if (!name.trim()) {
+      return "Environment name is required";
+    }
+    if (!/^[a-zA-Z][a-zA-Z0-9-_]*$/.test(name)) {
+      return "Name must start with a letter and contain only letters, numbers, hyphens, and underscores";
+    }
+    if (availableEnvironments.includes(name.toLowerCase())) {
+      return "Environment already exists";
+    }
+    return "";
+  };
+
+  /**
+   * Handles creating a new environment.
+   * Creates the environment, refreshes the list, and switches to it.
+   */
+  const handleCreateEnvironment = useCallback(async () => {
+    const validationError = validateEnvName(newEnvName);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    setIsCreating(true);
+    setError("");
+
+    try {
+      await createEnvironment(newEnvName.toLowerCase());
+      const environments = await listEnvironments();
+      setAvailableEnvironments(environments);
+
+      // Switch to the new environment
+      resetGraph();
+      resetNavigation();
+      setCurrentEnvironment(newEnvName.toLowerCase());
+
+      toast({
+        title: "Environment created",
+        description: `Successfully created "${newEnvName}" environment`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      handleCloseModal();
+    } catch (err) {
+      setError(String(err));
+    } finally {
+      setIsCreating(false);
+    }
+  }, [newEnvName, setAvailableEnvironments, resetGraph, resetNavigation, setCurrentEnvironment, toast, handleCloseModal]);
+
   return (
     <Menu>
       <MenuButton
@@ -144,7 +234,52 @@ export function EnvironmentSwitch() {
             </HStack>
           </MenuItem>
         ))}
+        <MenuDivider />
+        <MenuItem icon={<AddIcon />} onClick={onOpen}>
+          Create New Environment
+        </MenuItem>
       </MenuList>
+
+      {/* Create Environment Modal */}
+      <Modal isOpen={isOpen} onClose={handleCloseModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create New Environment</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl isInvalid={!!error}>
+              <FormLabel>Environment Name</FormLabel>
+              <Input
+                placeholder="e.g., staging, production, feature-branch"
+                value={newEnvName}
+                onChange={(e) => {
+                  setNewEnvName(e.target.value);
+                  setError("");
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleCreateEnvironment();
+                  }
+                }}
+              />
+              <FormErrorMessage>{error}</FormErrorMessage>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={handleCloseModal}>
+              Cancel
+            </Button>
+            <Button
+              colorScheme="blue"
+              onClick={handleCreateEnvironment}
+              isLoading={isCreating}
+              isDisabled={!newEnvName.trim()}
+            >
+              Create
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Menu>
   );
 }

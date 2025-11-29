@@ -46,18 +46,22 @@ export function ServiceTypeFilter() {
       queue: "yellow",
       frontend: "cyan",
       external: "gray",
+      "identity-provider": "pink",
     };
     return schemes[type] || "gray";
   };
 
   /**
-   * Formats a service type for display by capitalizing the first letter.
+   * Formats a service type for display by capitalizing each word.
    *
-   * @param type - The service type string (e.g., "api")
-   * @returns The formatted label (e.g., "Api")
+   * @param type - The service type string (e.g., "api", "identity-provider")
+   * @returns The formatted label (e.g., "Api", "Identity Provider")
    */
   const formatLabel = (type: string): string => {
-    return type.charAt(0).toUpperCase() + type.slice(1);
+    return type
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   return (

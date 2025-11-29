@@ -55,6 +55,11 @@ pub enum AppError {
     #[error("Environment not found: {0}")]
     EnvironmentNotFound(String),
 
+    /// The environment already exists.
+    /// Contains the environment name that already exists.
+    #[error("Environment already exists: {0}")]
+    EnvironmentExists(String),
+
     /// The provided file path is invalid.
     /// Contains a description of the path issue.
     #[error("Invalid path: {0}")]

@@ -158,6 +158,66 @@ pub fn switch_environment(
     Ok(())
 }
 
+/// Creates a new environment with the required directory structure.
+///
+/// Creates a new environment directory with an empty services folder and
+/// an empty relationships.json file. The environment name must be a valid
+/// directory name and cannot already exist.
+///
+/// # Arguments
+///
+/// * `state` - The application state containing the data path
+/// * `environment` - The name of the new environment to create
+///
+/// # Returns
+///
+/// * `Ok(())` - If the environment was successfully created
+/// * `Err(AppError::StateLock)` - If the application state mutex cannot be acquired
+/// * `Err(AppError::EnvironmentExists)` - If an environment with that name already exists
+/// * `Err(AppError::Io)` - If there's an error creating directories or files
+///
+/// # Directory Structure Created
+///
+/// ```text
+/// {data_path}/{environment}/
+/// ├── services/
+/// └── relationships.json
+/// ```
+///
+/// # Examples
+///
+/// ```typescript
+/// // From the frontend:
+/// await invoke('create_environment', { environment: 'staging' });
+/// ```
+#[tauri::command]
+pub fn create_environment(
+    state: State<'_, Mutex<AppState>>,
+    environment: String,
+) -> Result<(), AppError> {
+    let state = state.lock().map_err(|_| AppError::StateLock)?;
+
+    let env_path = state.data_path.join(&environment);
+
+    // Check if environment already exists
+    if env_path.exists() {
+        return Err(AppError::EnvironmentExists(environment));
+    }
+
+    // Create the environment directory
+    fs::create_dir_all(&env_path)?;
+
+    // Create the services subdirectory
+    let services_path = env_path.join("services");
+    fs::create_dir_all(&services_path)?;
+
+    // Create an empty relationships.json file
+    let relationships_path = env_path.join("relationships.json");
+    fs::write(&relationships_path, "[]")?;
+
+    Ok(())
+}
+
 /// Sets the root data directory path for all environment data.
 ///
 /// Changes the base directory where all environment folders are located.

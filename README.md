@@ -2,13 +2,15 @@
 
 A desktop application for visualizing and managing service dependencies across multiple deployment environments. Built with Tauri, React, and Rust.
 
-![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-blue)
-![Version](https://img.shields.io/badge/version-0.1.0-green)
+![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-green)
 ![License](https://img.shields.io/badge/license-MIT-purple)
 
 ## Overview
 
 The Dependency Mapping Tool helps engineering teams understand and document the relationships between microservices, databases, message queues, and other infrastructure components. It provides an interactive graph visualization that makes it easy to explore how services connect and depend on each other.
+
+LLMs were used to make the front end, I am not good at UI/UX design. 
 
 ## Features
 

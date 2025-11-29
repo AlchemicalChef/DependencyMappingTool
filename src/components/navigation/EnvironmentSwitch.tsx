@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Environment switcher dropdown component.
+ *
+ * Allows users to switch between different deployment environments
+ * (dev, staging, prod) with visual color coding for each environment.
+ *
+ * @module components/navigation/EnvironmentSwitch
+ */
+
 import {
   Menu,
   MenuButton,
@@ -12,6 +21,30 @@ import {
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useServicesStore, useGraphStore, useNavigationStore } from "@/store";
 
+/**
+ * Dropdown for switching between deployment environments.
+ *
+ * Displays a button showing the current environment with a color-coded
+ * badge. When clicked, shows a dropdown menu of all available environments.
+ *
+ * Color coding:
+ * - **Green**: dev, development
+ * - **Yellow**: staging, stage
+ * - **Red**: prod, production
+ * - **Gray**: other/unknown
+ *
+ * When switching environments:
+ * 1. Resets the graph state
+ * 2. Resets navigation history
+ * 3. Updates the current environment
+ *
+ * @returns The environment switcher dropdown
+ *
+ * @example
+ * ```tsx
+ * <EnvironmentSwitch />
+ * ```
+ */
 export function EnvironmentSwitch() {
   const { currentEnvironment, availableEnvironments, setCurrentEnvironment } =
     useServicesStore();
@@ -20,6 +53,12 @@ export function EnvironmentSwitch() {
 
   const bgColor = useColorModeValue("white", "gray.700");
 
+  /**
+   * Handles environment selection from the dropdown menu.
+   * Resets all state before switching to ensure a clean slate.
+   *
+   * @param env - The environment name to switch to
+   */
   const handleEnvironmentChange = (env: string) => {
     if (env !== currentEnvironment) {
       // Reset state when changing environments
@@ -29,6 +68,14 @@ export function EnvironmentSwitch() {
     }
   };
 
+  /**
+   * Maps environment names to Chakra UI color schemes.
+   * Uses semantic colors: green for dev (safe), yellow for staging (caution),
+   * red for production (danger).
+   *
+   * @param env - The environment name
+   * @returns A Chakra UI color scheme name
+   */
   const getEnvColorScheme = (env: string): string => {
     switch (env.toLowerCase()) {
       case "dev":
@@ -45,6 +92,12 @@ export function EnvironmentSwitch() {
     }
   };
 
+  /**
+   * Converts short environment names to display-friendly versions.
+   *
+   * @param env - The environment name (e.g., "dev", "prod")
+   * @returns The full display name (e.g., "Development", "Production")
+   */
   const getEnvDisplayName = (env: string): string => {
     const names: Record<string, string> = {
       dev: "Development",

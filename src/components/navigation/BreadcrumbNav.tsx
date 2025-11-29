@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Breadcrumb navigation component with back/forward buttons.
+ *
+ * Provides browser-like navigation through the history of viewed services,
+ * with clickable breadcrumb trail showing recent navigation path.
+ *
+ * @module components/navigation/BreadcrumbNav
+ */
+
 import {
   HStack,
   IconButton,
@@ -11,10 +20,36 @@ import {
 import { ChevronRightIcon, ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import { useNavigationStore, useServicesStore } from "@/store";
 
+/**
+ * Props for the BreadcrumbNav component.
+ *
+ * @property onNavigate - Callback to load graph for a service
+ */
 interface BreadcrumbNavProps {
   onNavigate: (serviceId: string) => void;
 }
 
+/**
+ * Navigation breadcrumb with back/forward controls.
+ *
+ * Features:
+ * - **Back/Forward buttons**: Navigate through service view history
+ * - **Breadcrumb trail**: Shows last 4 visited services
+ * - **Click navigation**: Click any breadcrumb to jump to that service
+ * - **Ellipsis indicator**: Shows "..." when history is truncated
+ *
+ * Uses the navigation store to manage history state and provide
+ * canGoBack/canGoForward functionality.
+ *
+ * @param props - Component props
+ * @param props.onNavigate - Handler called when navigating to a service
+ * @returns The breadcrumb navigation component
+ *
+ * @example
+ * ```tsx
+ * <BreadcrumbNav onNavigate={(id) => loadGraph(id)} />
+ * ```
+ */
 export function BreadcrumbNav({ onNavigate }: BreadcrumbNavProps) {
   const {
     history,
@@ -28,6 +63,10 @@ export function BreadcrumbNav({ onNavigate }: BreadcrumbNavProps) {
   const { services } = useServicesStore();
   const textColor = useColorModeValue("gray.600", "gray.400");
 
+  /**
+   * Navigates backward in the history stack.
+   * Only navigates if there is history to go back to.
+   */
   const handleGoBack = () => {
     const serviceId = goBack();
     if (serviceId) {
@@ -35,6 +74,10 @@ export function BreadcrumbNav({ onNavigate }: BreadcrumbNavProps) {
     }
   };
 
+  /**
+   * Navigates forward in the history stack.
+   * Only navigates if forward history exists.
+   */
   const handleGoForward = () => {
     const serviceId = goForward();
     if (serviceId) {
@@ -42,6 +85,12 @@ export function BreadcrumbNav({ onNavigate }: BreadcrumbNavProps) {
     }
   };
 
+  /**
+   * Handles clicking on a breadcrumb item to navigate directly.
+   * Does nothing if clicking the current item.
+   *
+   * @param index - The index in the history array to navigate to
+   */
   const handleBreadcrumbClick = (index: number) => {
     const serviceId = history[index];
     if (serviceId && index !== currentIndex) {

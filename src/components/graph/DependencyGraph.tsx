@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Interactive dependency graph visualization component.
+ *
+ * Uses Cytoscape.js to render an interactive graph of services and their
+ * relationships. Supports zooming, panning, node selection, and filtering.
+ *
+ * @module components/graph/DependencyGraph
+ */
+
 import { useRef, useCallback, useEffect } from "react";
 import CytoscapeComponent from "react-cytoscapejs";
 import cytoscape, { Core, NodeSingular } from "cytoscape";
@@ -14,13 +23,33 @@ import { useGraphStore, useFilterStore } from "@/store";
 import { getCytoscapeStylesheet } from "@/styles/cytoscape-theme";
 import { GraphControls } from "./GraphControls";
 
-// Register layout extension
+// Register the cose-bilkent layout algorithm
 cytoscape.use(coseBilkent);
 
+/**
+ * Props for the DependencyGraph component.
+ *
+ * @property onNodeClick - Callback when a node is clicked (for navigation)
+ */
 interface DependencyGraphProps {
   onNodeClick: (serviceId: string) => void;
 }
 
+/**
+ * Interactive dependency graph visualization using Cytoscape.js.
+ *
+ * Features:
+ * - Force-directed layout using cose-bilkent algorithm
+ * - Node selection and highlighting
+ * - Click-to-navigate (clicking a non-center node recenters the graph)
+ * - Filter support for service types, statuses, and relationship types
+ * - Dark mode support
+ * - Zoom and pan controls
+ *
+ * @param props - Component props
+ * @param props.onNodeClick - Handler for node click navigation
+ * @returns The rendered graph component
+ */
 export function DependencyGraph({ onNodeClick }: DependencyGraphProps) {
   const cyRef = useRef<Core | null>(null);
   const { colorMode } = useColorMode();

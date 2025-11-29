@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Service detail panel component.
+ *
+ * Displays detailed information about the currently selected or center
+ * service in a collapsible panel. Provides quick actions for editing,
+ * adding relationships, and deleting services.
+ *
+ * @module components/details/ServiceDetailPanel
+ */
+
 import {
   Box,
   VStack,
@@ -13,15 +23,50 @@ import {
   useColorModeValue,
   IconButton,
   Collapse,
+  ButtonGroup,
+  Tooltip,
 } from "@chakra-ui/react";
-import { ChevronUpIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import {
+  ChevronUpIcon,
+  ChevronDownIcon,
+  EditIcon,
+  DeleteIcon,
+  LinkIcon,
+} from "@chakra-ui/icons";
 import { useState } from "react";
 import { useGraphStore, useServicesStore } from "@/store";
+import { useEditorStore } from "@/store/editorStore";
 
+/**
+ * Collapsible panel displaying service details.
+ *
+ * Shows information about either:
+ * 1. The currently selected node in the graph, OR
+ * 2. The center service if no node is selected
+ *
+ * Displays:
+ * - Service name, type, and status
+ * - Description
+ * - Version, owner, and team
+ * - Tags
+ * - Custom metadata
+ *
+ * Provides action buttons for:
+ * - Editing the service
+ * - Creating a relationship from this service
+ * - Deleting the service
+ *
+ * @returns The service detail panel component
+ */
 export function ServiceDetailPanel() {
   const [isExpanded, setIsExpanded] = useState(true);
   const { selectedNodeId, centerService } = useGraphStore();
   const { services } = useServicesStore();
+  const {
+    openServiceEditor,
+    openRelationshipEditor,
+    openDeleteConfirmation,
+  } = useEditorStore();
 
   const bgColor = useColorModeValue("gray.50", "gray.700");
   const borderColor = useColorModeValue("gray.200", "gray.600");
@@ -90,16 +135,51 @@ export function ServiceDetailPanel() {
         <Box px={4} pb={4} overflow="auto" maxH="calc(50vh - 40px)">
           <VStack align="stretch" spacing={3}>
             <Box>
-              <Text fontWeight="bold" fontSize="lg">
-                {service.name}
-              </Text>
-              <HStack spacing={2} mt={1}>
-                <Badge colorScheme={getTypeColorScheme(service.serviceType)}>
-                  {service.serviceType}
-                </Badge>
-                <Badge colorScheme={getStatusColorScheme(service.status)}>
-                  {service.status}
-                </Badge>
+              <HStack justify="space-between" align="start">
+                <Box>
+                  <Text fontWeight="bold" fontSize="lg">
+                    {service.name}
+                  </Text>
+                  <HStack spacing={2} mt={1}>
+                    <Badge colorScheme={getTypeColorScheme(service.serviceType)}>
+                      {service.serviceType}
+                    </Badge>
+                    <Badge colorScheme={getStatusColorScheme(service.status)}>
+                      {service.status}
+                    </Badge>
+                  </HStack>
+                </Box>
+                <ButtonGroup size="xs" spacing={1}>
+                  <Tooltip label="Edit service">
+                    <IconButton
+                      aria-label="Edit service"
+                      icon={<EditIcon />}
+                      variant="ghost"
+                      onClick={() => openServiceEditor("edit", service)}
+                    />
+                  </Tooltip>
+                  <Tooltip label="Add relationship">
+                    <IconButton
+                      aria-label="Add relationship"
+                      icon={<LinkIcon />}
+                      variant="ghost"
+                      onClick={() =>
+                        openRelationshipEditor("create", undefined, service.id)
+                      }
+                    />
+                  </Tooltip>
+                  <Tooltip label="Delete service">
+                    <IconButton
+                      aria-label="Delete service"
+                      icon={<DeleteIcon />}
+                      variant="ghost"
+                      colorScheme="red"
+                      onClick={() =>
+                        openDeleteConfirmation("service", service.id, service.name)
+                      }
+                    />
+                  </Tooltip>
+                </ButtonGroup>
               </HStack>
             </Box>
 

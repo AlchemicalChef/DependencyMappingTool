@@ -1,16 +1,38 @@
+/**
+ * @fileoverview Zustand store for graph navigation history.
+ *
+ * Implements browser-like back/forward navigation for the dependency graph,
+ * allowing users to navigate through previously viewed services.
+ *
+ * @module store/navigationStore
+ */
+
 import { create } from "zustand";
 
+/**
+ * State interface for the navigation store.
+ *
+ * @property history - Array of visited service IDs
+ * @property currentIndex - Index of the current position in history
+ */
 interface NavigationState {
   history: string[];
   currentIndex: number;
 
   // Actions
+  /** Navigates to a new service (truncates forward history) */
   push: (serviceId: string) => void;
+  /** Goes back in history, returns the service ID or null */
   goBack: () => string | null;
+  /** Goes forward in history, returns the service ID or null */
   goForward: () => string | null;
+  /** Returns true if back navigation is available */
   canGoBack: () => boolean;
+  /** Returns true if forward navigation is available */
   canGoForward: () => boolean;
+  /** Gets the breadcrumb trail up to current position */
   getBreadcrumbs: () => string[];
+  /** Resets navigation history */
   reset: () => void;
 }
 

@@ -1,6 +1,24 @@
+/**
+ * @fileoverview Zustand store for filter state management.
+ *
+ * Manages filter settings for the graph and service list, including
+ * service type filters, status filters, relationship type filters,
+ * and search queries.
+ *
+ * @module store/filterStore
+ */
+
 import { create } from "zustand";
 import type { ServiceType, ServiceStatus, RelationshipType } from "@/types";
 
+/**
+ * State interface for the filter store.
+ *
+ * @property serviceTypes - Array of enabled service types to show
+ * @property statuses - Array of enabled statuses to show
+ * @property relationshipTypes - Array of enabled relationship types to show
+ * @property searchQuery - Current search query string
+ */
 interface FilterState {
   serviceTypes: ServiceType[];
   statuses: ServiceStatus[];
@@ -8,14 +26,21 @@ interface FilterState {
   searchQuery: string;
 
   // Actions
+  /** Toggles a service type filter on/off */
   toggleServiceType: (type: ServiceType) => void;
+  /** Toggles a status filter on/off */
   toggleStatus: (status: ServiceStatus) => void;
+  /** Toggles a relationship type filter on/off */
   toggleRelationshipType: (type: RelationshipType) => void;
+  /** Sets the search query */
   setSearchQuery: (query: string) => void;
+  /** Resets all filters to default (all enabled) */
   clearFilters: () => void;
+  /** Returns true if any filters are actively restricting results */
   hasActiveFilters: () => boolean;
 }
 
+/** All available service types for filtering */
 const ALL_SERVICE_TYPES: ServiceType[] = [
   "api",
   "database",

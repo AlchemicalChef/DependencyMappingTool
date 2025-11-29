@@ -1,5 +1,86 @@
+/**
+ * @fileoverview Cytoscape.js graph styling and theme configuration.
+ *
+ * Provides color mappings and stylesheet generation for the dependency
+ * graph visualization, with support for light and dark color modes.
+ *
+ * @module styles/cytoscape-theme
+ */
+
 import type { StylesheetStyle } from "cytoscape";
 
+/**
+ * Color mapping for relationship types.
+ *
+ * Used for edge (arrow) colors in the graph visualization.
+ * Colors are chosen to be visually distinct and semantically meaningful:
+ * - Red: dependencies (critical connections)
+ * - Blue: communication
+ * - Purple: authentication
+ * - Green/Orange: data read/write
+ * - Yellow/Cyan: pub/sub messaging
+ */
+export const RELATIONSHIP_COLORS: Record<string, string> = {
+  depends_on: "#E53E3E",
+  communicates_with: "#3182CE",
+  authenticates_via: "#805AD5",
+  reads_from: "#38A169",
+  writes_to: "#DD6B20",
+  publishes: "#D69E2E",
+  subscribes: "#00B5D8",
+};
+
+/**
+ * Color mapping for service types.
+ *
+ * Used for node (circle) background colors in the graph.
+ * Each service type has a distinct color for easy identification:
+ * - Purple: gateways (entry points)
+ * - Blue: APIs
+ * - Green: backend services
+ * - Orange: databases
+ * - Red: caches
+ * - Yellow: queues
+ * - Cyan: frontends
+ * - Gray: external services
+ */
+export const SERVICE_TYPE_COLORS: Record<string, string> = {
+  gateway: "#805AD5",
+  api: "#3182CE",
+  backend: "#38A169",
+  database: "#DD6B20",
+  cache: "#E53E3E",
+  queue: "#D69E2E",
+  frontend: "#00B5D8",
+  external: "#718096",
+};
+
+/**
+ * Generates a Cytoscape.js stylesheet for the dependency graph.
+ *
+ * Creates style rules for:
+ * - **Base nodes**: Default appearance with label positioning
+ * - **Center node**: Larger size with highlight color
+ * - **Selected node**: Purple border highlight
+ * - **Service type colors**: Background color based on type
+ * - **Status indicators**: Border color/style based on health
+ * - **Base edges**: Arrow styling with bezier curves
+ * - **Relationship colors**: Edge color based on type
+ *
+ * @param isDark - Whether to use dark mode colors
+ * @returns Array of Cytoscape StylesheetStyle objects
+ *
+ * @example
+ * ```typescript
+ * // In a component
+ * const stylesheet = getCytoscapeStylesheet(colorMode === 'dark');
+ *
+ * <CytoscapeComponent
+ *   stylesheet={stylesheet}
+ *   elements={elements}
+ * />
+ * ```
+ */
 export const getCytoscapeStylesheet = (isDark: boolean): StylesheetStyle[] => {
   const textColor = isDark ? "#E2E8F0" : "#1A202C";
   const borderColor = isDark ? "#4A5568" : "#E2E8F0";

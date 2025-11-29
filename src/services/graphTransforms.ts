@@ -1,11 +1,35 @@
+/**
+ * @fileoverview Graph data transformation utilities for Cytoscape.js visualization.
+ *
+ * This module provides functions to transform backend data structures into
+ * formats suitable for rendering with Cytoscape.js, as well as utility
+ * functions for consistent color coding across the application.
+ *
+ * @module services/graphTransforms
+ */
+
 import type { GraphData, GraphElements, GraphNode, GraphEdge } from "@/types/graph";
 import type { Service } from "@/types/service";
 import type { Relationship } from "@/types/relationship";
 
-export function transformToGraphElements(
-  data: GraphData,
-  _centerServiceId?: string
-): GraphElements {
+/**
+ * Transforms backend GraphData into Cytoscape.js compatible elements.
+ *
+ * Converts services to nodes and relationships to edges, marking the
+ * center service for special styling.
+ *
+ * @param data - The graph data from the backend containing center service,
+ *               connected services, and relationships
+ * @returns Array of Cytoscape elements (nodes and edges) ready for rendering
+ *
+ * @example
+ * ```typescript
+ * const graphData = await getServiceGraph('dev', 'api-gateway', 1);
+ * const elements = transformToGraphElements(graphData);
+ * cy.add(elements);
+ * ```
+ */
+export function transformToGraphElements(data: GraphData): GraphElements {
   const elements: GraphElements = [];
 
   // Add center service node
@@ -24,6 +48,13 @@ export function transformToGraphElements(
   return elements;
 }
 
+/**
+ * Converts a Service to a Cytoscape node element.
+ *
+ * @param service - The service to convert
+ * @param isCenter - Whether this service is the center of the graph view
+ * @returns A Cytoscape node element with service data
+ */
 function serviceToNode(service: Service, isCenter: boolean): GraphNode {
   return {
     data: {
@@ -36,6 +67,12 @@ function serviceToNode(service: Service, isCenter: boolean): GraphNode {
   };
 }
 
+/**
+ * Converts a Relationship to a Cytoscape edge element.
+ *
+ * @param relationship - The relationship to convert
+ * @returns A Cytoscape edge element with relationship data
+ */
 function relationshipToEdge(relationship: Relationship): GraphEdge {
   return {
     data: {
@@ -48,10 +85,32 @@ function relationshipToEdge(relationship: Relationship): GraphEdge {
   };
 }
 
+/**
+ * Formats a relationship type for display as a label.
+ *
+ * Replaces underscores with spaces for readability.
+ *
+ * @param type - The relationship type (e.g., "depends_on")
+ * @returns Human-readable label (e.g., "depends on")
+ */
 function formatRelationshipLabel(type: string): string {
   return type.replace(/_/g, " ");
 }
 
+/**
+ * Returns the color associated with a service type.
+ *
+ * Used for consistent visual differentiation of service types
+ * across the graph and UI.
+ *
+ * @param type - The service type (e.g., "api", "database")
+ * @returns Hex color code for the service type
+ *
+ * @example
+ * ```typescript
+ * const color = getServiceTypeColor('api'); // "#3182CE" (blue)
+ * ```
+ */
 export function getServiceTypeColor(type: string): string {
   const colors: Record<string, string> = {
     gateway: "#805AD5", // purple
@@ -66,6 +125,19 @@ export function getServiceTypeColor(type: string): string {
   return colors[type] || "#4A5568";
 }
 
+/**
+ * Returns the color associated with a service status.
+ *
+ * Used for visual health indicators in the graph and UI.
+ *
+ * @param status - The service status (e.g., "healthy", "degraded")
+ * @returns Hex color code for the status
+ *
+ * @example
+ * ```typescript
+ * const color = getStatusColor('healthy'); // "#48BB78" (green)
+ * ```
+ */
 export function getStatusColor(status: string): string {
   const colors: Record<string, string> = {
     healthy: "#48BB78", // green
@@ -77,6 +149,19 @@ export function getStatusColor(status: string): string {
   return colors[status] || "#A0AEC0";
 }
 
+/**
+ * Returns the color associated with a relationship type.
+ *
+ * Used for visual differentiation of edge types in the graph.
+ *
+ * @param type - The relationship type (e.g., "depends_on", "communicates_with")
+ * @returns Hex color code for the relationship type
+ *
+ * @example
+ * ```typescript
+ * const color = getRelationshipColor('depends_on'); // "#E53E3E" (red)
+ * ```
+ */
 export function getRelationshipColor(type: string): string {
   const colors: Record<string, string> = {
     depends_on: "#E53E3E", // red

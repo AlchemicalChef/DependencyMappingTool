@@ -34,6 +34,12 @@ pub fn run() {
             commands::environments::get_current_environment,
             commands::environments::switch_environment,
             commands::environments::set_data_path,
+            commands::relationships::get_all_relationships,
+            commands::relationships::get_relationships_for_service,
+            commands::relationships::save_relationship,
+            commands::relationships::delete_relationship,
+            commands::relationships::delete_relationships_for_service,
+            commands::validation::validate_environment,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

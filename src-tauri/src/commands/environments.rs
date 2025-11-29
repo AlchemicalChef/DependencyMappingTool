@@ -1,3 +1,9 @@
+//! Environment management commands for the Tauri application.
+//!
+//! This module provides functionality for managing different deployment environments
+//! (e.g., dev, staging, production). Each environment has its own isolated set of
+//! services and relationships stored in separate directories.
+
 use std::fs;
 use std::path::PathBuf;
 use std::sync::Mutex;
@@ -6,6 +12,37 @@ use tauri::State;
 use crate::error::AppError;
 use crate::state::AppState;
 
+/// Lists all available environments in the data directory.
+///
+/// Scans the data directory for subdirectories, treating each as a separate
+/// environment. Hidden directories (starting with '.') are excluded. Results
+/// are sorted with common environment names (dev, staging, prod) appearing first.
+///
+/// # Arguments
+///
+/// * `state` - The application state containing the data path
+///
+/// # Returns
+///
+/// * `Ok(Vec<String>)` - A sorted list of environment names
+/// * `Err(AppError::StateLock)` - If the application state mutex cannot be acquired
+/// * `Err(AppError::Io)` - If there's an error reading the data directory
+///
+/// # Sorting Order
+///
+/// Environments are sorted by priority:
+/// 1. `dev` / `development` (priority 0)
+/// 2. `staging` / `stage` (priority 1)
+/// 3. `prod` / `production` (priority 2)
+/// 4. Other environments alphabetically (priority 3)
+///
+/// # Examples
+///
+/// ```typescript
+/// // From the frontend:
+/// const environments = await invoke('list_environments');
+/// // Returns: ['dev', 'staging', 'prod', 'feature-branch']
+/// ```
 #[tauri::command]
 pub fn list_environments(state: State<'_, Mutex<AppState>>) -> Result<Vec<String>, AppError> {
     let state = state.lock().map_err(|_| AppError::StateLock)?;
@@ -45,12 +82,64 @@ pub fn list_environments(state: State<'_, Mutex<AppState>>) -> Result<Vec<String
     Ok(environments)
 }
 
+/// Retrieves the currently active environment name.
+///
+/// Returns the name of the environment that is currently selected for all
+/// service and relationship operations. The current environment is stored
+/// in the application state and persists during the session.
+///
+/// # Arguments
+///
+/// * `state` - The application state containing the current environment
+///
+/// # Returns
+///
+/// * `Ok(String)` - The name of the current environment
+/// * `Err(AppError::StateLock)` - If the application state mutex cannot be acquired
+///
+/// # Examples
+///
+/// ```typescript
+/// // From the frontend:
+/// const currentEnv = await invoke('get_current_environment');
+/// console.log(`Currently viewing: ${currentEnv}`); // "dev"
+/// ```
 #[tauri::command]
 pub fn get_current_environment(state: State<'_, Mutex<AppState>>) -> Result<String, AppError> {
     let state = state.lock().map_err(|_| AppError::StateLock)?;
     Ok(state.current_environment.clone())
 }
 
+/// Switches the active environment to a different one.
+///
+/// Changes the current environment context for all subsequent operations.
+/// The target environment must already exist as a directory in the data path.
+/// This does NOT clear caches - cached data from other environments remains
+/// available for quick switching.
+///
+/// # Arguments
+///
+/// * `state` - The application state to update
+/// * `environment` - The name of the environment to switch to
+///
+/// # Returns
+///
+/// * `Ok(())` - If the environment was successfully switched
+/// * `Err(AppError::StateLock)` - If the application state mutex cannot be acquired
+/// * `Err(AppError::EnvironmentNotFound)` - If the specified environment doesn't exist
+///
+/// # Side Effects
+///
+/// - Updates the `current_environment` field in the application state
+/// - Does NOT clear the services or relationships cache
+///
+/// # Examples
+///
+/// ```typescript
+/// // From the frontend:
+/// await invoke('switch_environment', { environment: 'staging' });
+/// // All subsequent service/relationship queries will use 'staging'
+/// ```
 #[tauri::command]
 pub fn switch_environment(
     state: State<'_, Mutex<AppState>>,
@@ -69,6 +158,51 @@ pub fn switch_environment(
     Ok(())
 }
 
+/// Sets the root data directory path for all environment data.
+///
+/// Changes the base directory where all environment folders are located.
+/// This clears all cached data since the cache would be invalid for the new
+/// location. The path must point to an existing directory.
+///
+/// # Arguments
+///
+/// * `state` - The application state to update
+/// * `path` - The absolute path to the new data directory
+///
+/// # Returns
+///
+/// * `Ok(())` - If the data path was successfully updated
+/// * `Err(AppError::StateLock)` - If the application state mutex cannot be acquired
+/// * `Err(AppError::InvalidPath)` - If the path doesn't exist or isn't a directory
+///
+/// # Side Effects
+///
+/// - Clears all cached services and relationships
+/// - Updates the `data_path` field in the application state
+///
+/// # Directory Structure Expected
+///
+/// ```text
+/// {data_path}/
+/// ├── dev/
+/// │   ├── services/
+/// │   └── relationships.json
+/// ├── staging/
+/// │   ├── services/
+/// │   └── relationships.json
+/// └── prod/
+///     ├── services/
+///     └── relationships.json
+/// ```
+///
+/// # Examples
+///
+/// ```typescript
+/// // From the frontend:
+/// await invoke('set_data_path', {
+///     path: '/Users/user/projects/my-app/service-data'
+/// });
+/// ```
 #[tauri::command]
 pub fn set_data_path(state: State<'_, Mutex<AppState>>, path: String) -> Result<(), AppError> {
     let mut state = state.lock().map_err(|_| AppError::StateLock)?;

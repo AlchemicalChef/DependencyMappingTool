@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Main filter panel container component.
+ *
+ * Organizes all filter controls in an accordion layout with
+ * collapsible sections for service type, status, and relationship filters.
+ *
+ * @module components/filters/FilterPanel
+ */
+
 import {
   VStack,
   Heading,
@@ -15,6 +24,24 @@ import { ServiceTypeFilter } from "./ServiceTypeFilter";
 import { StatusFilter } from "./StatusFilter";
 import { RelationshipFilter } from "./RelationshipFilter";
 
+/**
+ * Accordion-based filter panel for graph filtering.
+ *
+ * Contains three collapsible filter sections:
+ * 1. **Service Type**: Filter nodes by type (api, database, etc.)
+ * 2. **Status**: Filter nodes by health status
+ * 3. **Relationship Type**: Filter edges by dependency type
+ *
+ * Shows a "Clear all" button when any filters are active.
+ * All sections are expanded by default.
+ *
+ * @returns The filter panel component
+ *
+ * @example
+ * ```tsx
+ * <FilterPanel />
+ * ```
+ */
 export function FilterPanel() {
   const { clearFilters, hasActiveFilters } = useFilterStore();
   const headingColor = useColorModeValue("gray.700", "gray.200");

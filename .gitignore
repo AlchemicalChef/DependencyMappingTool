@@ -4,6 +4,7 @@ node_modules/
 # Build outputs
 dist/
 build/
+out/
 
 # Rust/Cargo
 target/
@@ -14,6 +15,12 @@ Cargo.lock
 src-tauri/target/
 src-tauri/WixTools/
 src-tauri/gen/
+*.app
+*.dmg
+*.msi
+*.deb
+*.AppImage
+*.rpm
 
 # IDE and editors
 .idea/
@@ -24,6 +31,8 @@ src-tauri/gen/
 .project
 .classpath
 .settings/
+*.sublime-workspace
+*.sublime-project
 
 # OS generated files
 .DS_Store
@@ -33,6 +42,7 @@ src-tauri/gen/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
 # Environment variables
 .env
@@ -40,6 +50,7 @@ Thumbs.db
 .env.development.local
 .env.test.local
 .env.production.local
+.env*.local
 
 # Logs
 logs/
@@ -53,11 +64,15 @@ lerna-debug.log*
 # Testing
 coverage/
 .nyc_output/
+test-results/
+playwright-report/
 
 # Temporary files
 *.tmp
 *.temp
 *.bak
+tmp/
+temp/
 
 # TypeScript cache
 *.tsbuildinfo
@@ -68,5 +83,36 @@ coverage/
 # Optional eslint cache
 .eslintcache
 
+# Optional prettier cache
+.prettiercache
+
 # Vite
 *.local
+
+# TLA+ model checker outputs
+*.toolbox/
+*.old
+states/
+*.dump
+
+# Application data (keep sample data, ignore user data)
+# Uncomment the following if you want to ignore all data:
+# data/
+
+# Package manager locks (keep one, ignore others)
+# Uncomment the ones you don't use:
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Debug
+.debug/
+debug/
+
+# Rust-specific
+*.pdb
+**/*.rs.bk
+*.rlib
+
+# Tauri-specific
+src-tauri/Cargo.lock
